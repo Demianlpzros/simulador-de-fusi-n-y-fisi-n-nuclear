@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Simulador de Procesos Nucleares</title>
+  <style>
+    body {
+      background: #0e0e0e;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 2rem;
+      transition: background 0.5s, color 0.5s;
+    }
+    h1 {
+      color: #00ff88;
+    }
+    #container {
+      margin-top: 2rem;
+      position: relative;
+      height: 300px;
+      overflow: hidden;
+    }
+    .nucleus, .neutron {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      position: absolute;
+      top: 130px;
+      transition: all 1s ease;
+    }
+    .nucleus {
+      background: #00ff88;
+    }
+    .neutron {
+      background: #3498db;
+      width: 20px;
+      height: 20px;
+      top: 140px;
+    }
+    button {
+      margin: 1rem;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #00ff88;
+      color: black;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #00cc6a;
+    }
+    #info {
+      max-width: 600px;
+      margin: 1rem auto;
+      font-size: 1rem;
+      line-height: 1.6;
+    }
+    #modeToggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: #222;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simulador de Fisión y Fusión Nuclear</h1>
+  <p>Haz clic para ver cómo ocurren estos procesos con visuales y movimiento.</p>
+  <button onclick="fision()">💥 Fisión</button>
+  <button onclick="fusion()">☀️ Fusión</button>
+  <button id="modeToggle" onclick="toggleMode()">🌙 Modo Oscuro</button>
+  <div id="info">
+    <strong>Fisión:</strong> Un núcleo pesado se divide en dos más ligeros, liberando energía y neutrones.<br>
+    <strong>Fusión:</strong> Dos núcleos ligeros se combinan formando uno más pesado, como en el Sol.
+  </div>
+  <div id="container"></div>
+
+  <audio id="soundFision" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_98a3a22fc1.mp3?filename=boom-1-6840.mp3"></audio>
+  <audio id="soundFusion" src="https://cdn.pixabay.com/download/audio/2022/01/31/audio_74dc2b2d29.mp3?filename=whoosh-6314.mp3"></audio>
+
+  <script>
+    const container = document.getElementById("container");
+    const soundFision = document.getElementById("soundFision");
+    const soundFusion = document.getElementById("soundFusion");
+
+    function clear() {
+      container.innerHTML = '';
+    }
+
+    function crearNeutron(x, delay) {
+      const neutron = document.createElement("div");
+      neutron.className = "neutron";
+      neutron.style.left = `${x}%`;
+      container.appendChild(neutron);
+      setTimeout(() => {
+        neutron.style.top = "0px";
+      }, delay);
+    }
+
+    function fision() {
+      clear();
+      soundFision.play();
+      const bigNucleus = document.createElement("div");
+      bigNucleus.className = "nucleus";
+      bigNucleus.style.left = "calc(50% - 20px)";
+      container.appendChild(bigNucleus);
+
+      setTimeout(() => {
+        bigNucleus.style.left = "30%";
+        const fragment = document.createElement("div");
+        fragment.className = "nucleus";
+        fragment.style.background = "#ff5555";
+        fragment.style.left = "70%";
+        container.appendChild(fragment);
+
+        crearNeutron(25, 100);
+        crearNeutron(50, 300);
+        crearNeutron(75, 500);
+      }, 1000);
+    }
+
+    function fusion() {
+      clear();
+      soundFusion.play();
+      const nucleus1 = document.createElement("div");
+      const nucleus2 = document.createElement("div");
+      nucleus1.className = "nucleus";
+      nucleus2.className = "nucleus";
+      nucleus1.style.left = "30%";
+      nucleus2.style.left = "70%";
+      container.appendChild(nucleus1);
+      container.appendChild(nucleus2);
+
+      setTimeout(() => {
+        nucleus1.style.left = "50%";
+        nucleus2.style.left = "50%";
+      }, 1000);
+
+      setTimeout(() => {
+        nucleus2.remove();
+        nucleus1.style.background = "#ffaa00";
+        crearNeutron(20, 100);
+        crearNeutron(80, 300);
+      }, 2000);
+    }
+
+    function toggleMode() {
+      const isDark = document.body.style.background === 'white';
+      document.body.style.background = isDark ? '#0e0e0e' : 'white';
+      document.body.style.color = isDark ? 'white' : 'black';
+    }
+  </script>
+</body>
+</html>
